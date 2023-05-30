@@ -87,13 +87,28 @@ func postNote(c *gin.Context) {
 	})
 }
 
-func getNotes(c *gin.Context) {
-	c.JSON(http.StatusOK, notes)
+type getNotesRequest struct {
+	Username	string	`json:"username"`
+}
+
+func getNotesByUser(c *gin.Context) {
+	var request getNotesRequest
+
+	c.BindJSON(&request)
+
+	var userNotes = []note{}
+
+	for _, note := range notes {
+		if note.Username == request.Username {
+			userNotes = append(userNotes, note)
+		}
+	}
+
+	c.JSON(http.StatusOK, userNotes)
 }
 
 func main() {
 	// psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-    
 	// db, err := sql.Open("postgres", psqlconn)
 	// defer db.Close()
 
@@ -101,6 +116,6 @@ func main() {
 	router.POST("/login", postLogin)
 	router.POST("/register", postRegister)
 	router.POST("/post", postNote)
-	router.GET("/all", getNotes)
+	router.GET("/all", getNotesByUser)
 	router.Run("localhost:8080")
 }
