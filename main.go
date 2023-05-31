@@ -106,7 +106,7 @@ func getPostsByUser(c *gin.Context) {
 	c.JSON(http.StatusOK, userPosts)
 }
 
-type updatePostRequest struct {
+type editPostRequest struct {
 	Username    string    `json:"username"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
@@ -114,7 +114,7 @@ type updatePostRequest struct {
 }
 
 func editPost(c *gin.Context) {
-	var request updatePostRequest
+	var request editPostRequest
 	c.BindJSON(&request)
 
 	if request.Title == "" {
@@ -122,6 +122,7 @@ func editPost(c *gin.Context) {
 			"status":  "400",
 			"message": "Post Title cannot be empty",
 		})
+		return
 	}
 
 	if request.Description == "" {
@@ -129,11 +130,16 @@ func editPost(c *gin.Context) {
 			"status":  "400",
 			"message": "Post Description cannot be empty",
 		})
+		return
 	}
 
 	for _, post := range posts {
 		if post.Id == request.PostId {
+			post.Title = request.Title
+			post.Description = request.Description
+
 			c.JSON(http.StatusOK, post)
+			return
 		}
 	}
 
