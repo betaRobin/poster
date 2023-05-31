@@ -148,13 +148,20 @@ type deletePostRequest struct {
 	PostId   uuid.UUID `json:"post_id"`
 }
 
+func removePost(ps []post, index int) []post {
+	ret := make([]post, 0)
+	ret = append(ret, ps[:index]...)
+	return append(ret, ps[index+1:]...)
+}
+
 func deletePost(c *gin.Context) {
 	var request deletePostRequest
 	c.BindJSON(&request)
 
-	for _, post := range posts {
+	for idx, post := range posts {
 		if post.Id == request.PostId {
 			if post.Username == request.Username {
+				removePost(posts, idx)
 				c.JSON(http.StatusOK, gin.H{
 					"status":  "200",
 					"message": "Success",
