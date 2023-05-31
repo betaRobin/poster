@@ -161,16 +161,18 @@ func deletePost(c *gin.Context) {
 	for idx, post := range posts {
 		if post.Id == request.PostId {
 			if post.Username == request.Username {
-				removePost(posts, idx)
+				posts = removePost(posts, idx)
 				c.JSON(http.StatusOK, gin.H{
 					"status":  "200",
 					"message": "Success",
 				})
+				return
 			} else {
 				c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 					"status":  "403",
 					"message": "Forbidden",
 				})
+				return
 			}
 		}
 	}
