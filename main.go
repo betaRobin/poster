@@ -133,12 +133,12 @@ func editPost(c *gin.Context) {
 		return
 	}
 
-	for _, post := range posts {
-		if post.Id == request.PostId {
-			post.Title = request.Title
-			post.Description = request.Description
+	for i, post := range posts {
+		if post.Id == request.PostId && post.Username == request.Username {
+			posts[i].Title = request.Title
+			posts[i].Description = request.Description
 
-			c.JSON(http.StatusOK, post)
+			c.JSON(http.StatusOK, posts[i])
 			return
 		}
 	}
