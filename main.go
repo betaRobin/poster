@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	controller "github.com/betaRobin/poster/controller"
 	entity "github.com/betaRobin/poster/entity"
 	request "github.com/betaRobin/poster/models/request"
 	"github.com/gin-gonic/gin"
@@ -11,37 +12,14 @@ import (
 )
 
 var users = []entity.User{
-	{Username: "UserOne", Password: "pwOne"},
-	{Username: "UserTwo", Password: "pwTwo"},
+	{Username: "UserOne", Password: "PwOne"},
+	{Username: "UserTwo", Password: "PwTwo"},
 }
 
 var posts = []entity.Post{
 	{Id: uuid.New(), Title: "Title One", Description: "Title description", Username: "UserOne"},
 	{Id: uuid.New(), Title: "Title Two", Description: "Title description", Username: "UserOne"},
 	{Id: uuid.New(), Title: "Title One", Description: "Title description", Username: "UserTwo"},
-}
-
-func login(c *gin.Context) {
-	var request request.Login
-	c.BindJSON(&request)
-
-	for _, user := range users {
-		var isCorrectLogin bool = user.Username == request.Username && user.Password == request.Password
-		if isCorrectLogin {
-			fmt.Println("Login success")
-			c.JSON(http.StatusOK, gin.H{
-				"status":  "200",
-				"message": "Success",
-			})
-			return
-		}
-	}
-
-	fmt.Println("Username or Password incorrect")
-	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-		"status":  "400",
-		"message": "Username or Password incorrect",
-	})
 }
 
 func register(c *gin.Context) {
@@ -172,7 +150,7 @@ func main() {
 	router := gin.Default()
 
 	// User
-	router.POST("/login", login)
+	router.POST("/login", controller.Login)
 	router.POST("/register", register)
 
 	// Post
