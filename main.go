@@ -4,67 +4,62 @@ import (
 	"fmt"
 	"net/http"
 
+	entity "github.com/betaRobin/poster/entity"
+	request "github.com/betaRobin/poster/models/request"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-const (
-// host     = "localhost"
-// port     = 5432
-// user     = "robinwantah"
-// password = "RobinWantah369"
-// dbname   = "postgres"
-)
-
-var credentials = map[string]string{
-	"UserOne": "PwOne",
-	"UserTwo": "PwTwo",
+var users = []entity.User{
+	{Username: "UserOne", Password: "pwOne"},
+	{Username: "UserTwo", Password: "pwTwo"},
 }
 
-type credential struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type post struct {
-	Id          uuid.UUID `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Username    string    `json:"username"`
-}
-
-var posts = []post{
+var posts = []entity.Post{
 	{Id: uuid.New(), Title: "Title One", Description: "Title description", Username: "UserOne"},
 	{Id: uuid.New(), Title: "Title Two", Description: "Title description", Username: "UserOne"},
 	{Id: uuid.New(), Title: "Title One", Description: "Title description", Username: "UserTwo"},
 }
 
 func login(c *gin.Context) {
-	var loginCredentials credential
-	c.BindJSON(&loginCredentials)
+	var request request.Login
+	c.BindJSON(&request)
 
-	password, exists := credentials[loginCredentials.Username]
-
-	if (!exists) || (password != loginCredentials.Password) {
-		fmt.Println("Username or Password incorrect")
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status":  "400",
-			"message": "Username or Password incorrect",
-		})
-	} else {
-		fmt.Println("Login success")
-		c.JSON(http.StatusOK, gin.H{
-			"status":  "200",
-			"message": "Success",
-		})
+	for _, user := range users {
+		var isCorrectLogin bool = user.Username == request.Username && user.Password == request.Password
+		if isCorrectLogin {
+			fmt.Println("Login success")
+			c.JSON(http.StatusOK, gin.H{
+				"status":  "200",
+				"message": "Success",
+			})
+			return
+		}
 	}
+
+	fmt.Println("Username or Password incorrect")
+	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		"status":  "400",
+		"message": "Username or Password incorrect",
+	})
 }
 
 func register(c *gin.Context) {
-	var signUpCredentials credential
-	c.BindJSON(&signUpCredentials)
+	var request request.Register
+	c.BindJSON(&request)
 
-	credentials[signUpCredentials.Username] = signUpCredentials.Password
+	for _, user := range users {
+		if user.Username == request.Username {
+			fmt.Printf("Registration failed, username \"%s\" already taken\n", user.Username)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status":  "400",
+				"message": "Username already taken",
+			})
+			return
+		}
+	}
+
+	users = append(users, entity.User{Username: request.Username, Password: request.Password})
 
 	fmt.Println("Registration success")
 	c.JSON(http.StatusOK, gin.H{
@@ -74,7 +69,7 @@ func register(c *gin.Context) {
 }
 
 func createPost(c *gin.Context) {
-	var newPost post
+	var newPost entity.Post
 	c.BindJSON(&newPost)
 
 	newPost.Id = uuid.New()
@@ -87,15 +82,11 @@ func createPost(c *gin.Context) {
 	})
 }
 
-type getPostsRequest struct {
-	Username string `json:"username"`
-}
-
 func getPostsByUser(c *gin.Context) {
-	var request getPostsRequest
+	var request request.GetPostsRequest
 	c.BindJSON(&request)
 
-	var userPosts = []post{}
+	var userPosts = []entity.Post{}
 
 	for _, post := range posts {
 		if post.Username == request.Username {
@@ -106,15 +97,8 @@ func getPostsByUser(c *gin.Context) {
 	c.JSON(http.StatusOK, userPosts)
 }
 
-type editPostRequest struct {
-	Username    string    `json:"username"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	PostId      uuid.UUID `json:"post_id"`
-}
-
 func editPost(c *gin.Context) {
-	var request editPostRequest
+	var request request.EditPostRequest
 	c.BindJSON(&request)
 
 	if request.Title == "" {
@@ -149,19 +133,14 @@ func editPost(c *gin.Context) {
 	})
 }
 
-type deletePostRequest struct {
-	Username string    `json:"username"`
-	PostId   uuid.UUID `json:"post_id"`
-}
-
-func removePost(ps []post, index int) []post {
-	ret := make([]post, 0)
+func removePost(ps []entity.Post, index int) []entity.Post {
+	ret := make([]entity.Post, 0)
 	ret = append(ret, ps[:index]...)
 	return append(ret, ps[index+1:]...)
 }
 
 func deletePost(c *gin.Context) {
-	var request deletePostRequest
+	var request request.DeletePostRequest
 	c.BindJSON(&request)
 
 	for idx, post := range posts {
@@ -190,24 +169,16 @@ func deletePost(c *gin.Context) {
 }
 
 func main() {
-	// psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	// db, err := sql.Open("postgres", psqlconn)
-	// defer db.Close()
-
 	router := gin.Default()
 
-	// POST
+	// User
 	router.POST("/login", login)
 	router.POST("/register", register)
+
+	// Post
 	router.POST("/post", createPost)
-
-	// GET
 	router.GET("/all", getPostsByUser)
-
-	// PUT
 	router.PUT("/edit", editPost)
-
-	// Delete
 	router.DELETE("/delete", deletePost)
 
 	router.Run("localhost:8080")

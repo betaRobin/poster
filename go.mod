@@ -1,4 +1,4 @@
-module application/notes
+module github.com/betaRobin/poster
 
 go 1.20
 
