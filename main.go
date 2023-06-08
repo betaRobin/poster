@@ -6,7 +6,7 @@ import (
 
 	controller "github.com/betarobin/poster/controller"
 	entity "github.com/betarobin/poster/entity"
-	request "github.com/betarobin/poster/models/request"
+	request "github.com/betarobin/poster/model/request"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )

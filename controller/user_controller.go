@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/betarobin/poster/models/request"
+	"github.com/betarobin/poster/model/request"
 	"github.com/betarobin/poster/service"
 	"github.com/gin-gonic/gin"
 )
@@ -26,4 +26,9 @@ func Login(c *gin.Context) {
 			"message": "Invalid username/password",
 		})
 	}
+}
+
+func Register(c *gin.Context) {
+	var request request.Register
+	c.BindJSON(&request)
 }
