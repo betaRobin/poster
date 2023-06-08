@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	controller "github.com/betaRobin/poster/controller"
-	entity "github.com/betaRobin/poster/entity"
-	request "github.com/betaRobin/poster/models/request"
+	controller "github.com/betarobin/poster/controller"
+	entity "github.com/betarobin/poster/entity"
+	request "github.com/betarobin/poster/models/request"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )

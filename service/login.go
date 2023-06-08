@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/betaRobin/poster/database"
-	"github.com/betaRobin/poster/entity"
-	"github.com/betaRobin/poster/models/request"
+	"github.com/betarobin/poster/database"
+	"github.com/betarobin/poster/entity"
+	"github.com/betarobin/poster/models/request"
 )
 
 func Login(request request.Login) bool {

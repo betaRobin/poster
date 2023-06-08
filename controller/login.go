@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/betaRobin/poster/models/request"
-	"github.com/betaRobin/poster/service"
+	"github.com/betarobin/poster/models/request"
+	"github.com/betarobin/poster/service"
 	"github.com/gin-gonic/gin"
 )
 
