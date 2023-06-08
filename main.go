@@ -11,39 +11,10 @@ import (
 	"github.com/google/uuid"
 )
 
-var users = []entity.User{
-	{Username: "UserOne", Password: "PwOne"},
-	{Username: "UserTwo", Password: "PwTwo"},
-}
-
 var posts = []entity.Post{
 	{Id: uuid.New(), Title: "Title One", Description: "Title description", Username: "UserOne"},
 	{Id: uuid.New(), Title: "Title Two", Description: "Title description", Username: "UserOne"},
 	{Id: uuid.New(), Title: "Title One", Description: "Title description", Username: "UserTwo"},
-}
-
-func register(c *gin.Context) {
-	var request request.Register
-	c.BindJSON(&request)
-
-	for _, user := range users {
-		if user.Username == request.Username {
-			fmt.Printf("Registration failed, username \"%s\" already taken\n", user.Username)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status":  "400",
-				"message": "Username already taken",
-			})
-			return
-		}
-	}
-
-	users = append(users, entity.User{Username: request.Username, Password: request.Password})
-
-	fmt.Println("Registration success")
-	c.JSON(http.StatusOK, gin.H{
-		"status":  "200",
-		"message": "Success",
-	})
 }
 
 func createPost(c *gin.Context) {
@@ -151,7 +122,7 @@ func main() {
 
 	// User
 	router.POST("/login", controller.Login)
-	router.POST("/register", register)
+	router.POST("/register", controller.Register)
 
 	// Post
 	router.POST("/post", createPost)
