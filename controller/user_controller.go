@@ -33,20 +33,7 @@ func Register(c *gin.Context) {
 	var request request.Register
 	c.BindJSON(&request)
 
-	status := service.Register(request)
+	status, message := service.Register(request)
 
-	switch status {
-	case http.StatusOK:
-		log.Println("[Register] User registration success")
-		helper.Response(c, status, "User registration success")
-		return
-	case http.StatusBadRequest:
-		log.Println("[Register] Username already taken")
-		helper.Response(c, status, "Username already taken")
-		return
-	default:
-		log.Println("[Register] User registration failed")
-		helper.Response(c, status, "Internal server error")
-		return
-	}
+	helper.Response(c, status, message)
 }
