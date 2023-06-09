@@ -11,10 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func Login(request request.Login) bool {
+func Login(request request.Login) (int, string) {
 	_, result := repository.VerifyUser(request.Username, request.Password)
 
-	return result.Error == nil
+	if result.Error == nil {
+		log.Println("[Login] Login success")
+		return http.StatusOK, "Login success"
+	} else if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		log.Println("[Login] Login failed")
+		return http.StatusBadRequest, "Invalid username or password"
+	} else {
+		log.Println("[Login] Login failed")
+		return http.StatusInternalServerError, "Failed to login"
+	}
 }
 
 func Register(request request.Register) (int, string) {
