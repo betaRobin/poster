@@ -9,8 +9,6 @@ import (
 )
 
 func getPostsByUser(c *gin.Context) {
-	var request request.GetPostsRequest
-	c.BindJSON(&request)
 
 	// var userPosts = []entity.Post{}
 
@@ -103,7 +101,7 @@ func main() {
 
 	// Post
 	router.POST("/post", post.CreatePost)
-	// router.GET("/all", getPostsByUser)
+	router.GET("/all", post.GetPostsByUser)
 	// router.PUT("/edit", editPost)
 	// router.DELETE("/delete", deletePost)
 
