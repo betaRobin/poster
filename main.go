@@ -1,25 +1,12 @@
 package main
 
 import (
-	controller "github.com/betarobin/poster/controller"
+	"github.com/betarobin/poster/controller/post"
+	"github.com/betarobin/poster/controller/user"
 	entity "github.com/betarobin/poster/entity"
 	request "github.com/betarobin/poster/model/request"
 	"github.com/gin-gonic/gin"
 )
-
-func createPost(c *gin.Context) {
-	var newPost entity.Post
-	c.BindJSON(&newPost)
-
-	// newPost.Id = uuid.New()
-
-	// posts = append(posts, newPost)
-	// fmt.Println("Post created")
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"status":  "200",
-	// 	"message": "Success",
-	// })
-}
 
 func getPostsByUser(c *gin.Context) {
 	var request request.GetPostsRequest
@@ -111,14 +98,14 @@ func main() {
 	router := gin.Default()
 
 	// User
-	router.POST("/login", controller.Login)
-	router.POST("/register", controller.Register)
+	router.POST("/login", user.Login)
+	router.POST("/register", user.Register)
 
 	// Post
-	router.POST("/post", createPost)
-	router.GET("/all", getPostsByUser)
-	router.PUT("/edit", editPost)
-	router.DELETE("/delete", deletePost)
+	router.POST("/post", post.CreatePost)
+	// router.GET("/all", getPostsByUser)
+	// router.PUT("/edit", editPost)
+	// router.DELETE("/delete", deletePost)
 
 	router.Run("localhost:8080")
 }

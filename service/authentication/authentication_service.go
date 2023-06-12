@@ -1,4 +1,4 @@
-package service
+package auth
 
 import (
 	"log"
@@ -8,7 +8,7 @@ import (
 )
 
 func IsUserLoggedIn(c *gin.Context) bool {
-	userId := c.GetHeader("poster-id")
+	userId := c.GetHeader("user-id")
 
 	if len(userId) != 0 {
 		log.Println("[Login] User already logged on")
@@ -19,11 +19,11 @@ func IsUserLoggedIn(c *gin.Context) bool {
 }
 
 func IsValidUser(c *gin.Context) bool {
-	userId := c.GetHeader("poster-id")
+	userId := c.GetHeader("user-id")
 
 	if len(userId) != 0 {
-		_, err := repository.FindUserByUsername(userId)
-		return err == nil
+		_, result := repository.FindUserById(userId)
+		return result.Error == nil
 	} else {
 		return false
 	}
