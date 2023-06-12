@@ -2,13 +2,12 @@ package entity
 
 import (
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type Post struct {
-	gorm.Model
-	Id          uuid.UUID `json:"id"`
+	Id          uuid.UUID `json:"id" gorm:"type:uuid;default:uuid_generate_v4()"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
-	Username    string    `json:"username"`
+	UserId      uuid.UUID `json:"user-id"`
+	User        User
 }
