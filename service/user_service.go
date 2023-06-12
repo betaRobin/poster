@@ -3,33 +3,33 @@ package service
 import (
 	"errors"
 	"log"
-	"net/http"
 
+	"github.com/betarobin/poster/enum/errlist"
 	"github.com/betarobin/poster/helper"
 	"github.com/betarobin/poster/model/request"
 	"github.com/betarobin/poster/repository"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func Login(request request.Login) (int, string) {
-	_, result := repository.VerifyUser(request.Username, request.Password)
+func Login(request request.Login) (*uuid.UUID, error) {
+
+	user, result := repository.VerifyUser(request.Username, request.Password)
 
 	if result.Error == nil {
 		log.Println("[Login] Login success")
-		return http.StatusOK, "Login success"
+		return &user.Id, nil
 	} else if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		log.Println("[Login] Login failed")
-		return http.StatusBadRequest, "Invalid username or password"
+		return nil, errlist.ErrInvalidLogin
 	} else {
-		log.Println("[Login] Login failed")
-		return http.StatusInternalServerError, "Failed to login"
+		return nil, result.Error
 	}
 }
 
-func Register(request request.Register) (int, string) {
+func Register(request request.Register) error {
 	if !helper.ValidateUsername(request.Username) {
 		log.Println("[Register] Invalid username")
-		return http.StatusBadRequest, "Invalid username"
+		return errlist.ErrInvalidUserName
 	}
 
 	_, result := repository.FindUserByUsername(request.Username)
@@ -39,17 +39,17 @@ func Register(request request.Register) (int, string) {
 
 		if result.Error == nil {
 			log.Println("[Register] User registration success")
-			return http.StatusOK, "User registration success"
+			return nil
 		} else {
 			log.Println("[Register] User registration failed")
-			return http.StatusInternalServerError, "Error creating user"
+			return result.Error
 		}
 
 	} else if result.Error == nil {
 		log.Println("[Register] Username already taken")
-		return http.StatusBadRequest, "Username already taken"
+		return errlist.ErrUsernameTaken
 	} else {
 		log.Println("[Register] User registration failed")
-		return http.StatusInternalServerError, "Error creating user"
+		return result.Error
 	}
 }

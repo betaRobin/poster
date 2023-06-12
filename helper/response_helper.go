@@ -1,14 +1,21 @@
 package helper
 
 import (
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 )
 
-func Response(c *gin.Context, httpStatus int, message string) {
+func Response(c *gin.Context, httpStatus int, response gin.H) {
+	c.JSON(httpStatus, response)
+}
+
+func ErrorResponse(c *gin.Context, httpStatus int, err error) {
 	c.JSON(httpStatus, gin.H{
-		"status":  strconv.Itoa(httpStatus),
-		"message": message,
+		"error": err.Error(),
 	})
+}
+
+func BaseResponse(message string) gin.H {
+	return gin.H{
+		"message": message,
+	}
 }
