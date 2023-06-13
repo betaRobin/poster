@@ -10,15 +10,15 @@ import (
 )
 
 func InsertPost(userId uuid.UUID, title string, description string) (*entity.Post, *gorm.DB) {
-	post := entity.Post{Title: title, Description: description, UserId: userId}
+	post := entity.NewPost(title, description, userId)
 	db := database.Connect()
-	result := db.Create(&post)
+	result := db.Create(post)
 
 	if result.Error != nil {
 		log.Println("[InsertPost] Failed to insert post")
 	}
 
-	return &post, result
+	return post, result
 }
 
 func GetPostsByUserId(userId uuid.UUID) (*[]entity.Post, *gorm.DB) {
