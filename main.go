@@ -8,19 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getPostsByUser(c *gin.Context) {
-
-	// var userPosts = []entity.Post{}
-
-	// for _, post := range posts {
-	// 	if post.Username == request.Username {
-	// 		userPosts = append(userPosts, post)
-	// 	}
-	// }
-
-	// c.JSON(http.StatusOK, userPosts)
-}
-
 func editPost(c *gin.Context) {
 	var request request.EditPostRequest
 	c.BindJSON(&request)

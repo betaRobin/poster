@@ -24,7 +24,7 @@ func InsertPost(userId uuid.UUID, title string, description string) (*entity.Pos
 func GetPostsByUserId(userId uuid.UUID) (*[]entity.Post, *gorm.DB) {
 	var posts []entity.Post
 	db := database.Connect()
-	result := db.Where("user_id = ?", userId).Find(&posts)
+	result := db.Model(&entity.Post{}).Preload("User").Where("user_id = ?", userId).Find(&posts)
 
 	if result.Error != nil {
 		log.Println("[GetPostsByUserId] Failed to get posts")

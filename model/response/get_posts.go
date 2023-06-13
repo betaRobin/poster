@@ -15,22 +15,22 @@ type GetPostsRequest struct {
 	UpdatedAt   *time.Time `json:"updated_at"`
 }
 
-func Posts(posts []entity.Post) *[]GetPostsRequest {
+func Posts(posts *[]entity.Post) []GetPostsRequest {
 	var response = []GetPostsRequest{}
 
 	if posts == nil {
-		return &response
+		return response
 	}
 
-	for _, post := range posts {
+	for _, post := range *posts {
 		response = append(response, GetPostsRequest{
-			PostId:      post.Id.String(),
-			Username:    post.User.Username,
+			PostId:      post.ID.String(),
 			Title:       post.Title,
+			Username:    post.User.Username,
 			Description: post.Description,
 			CreatedAt:   post.CreatedAt,
 			UpdatedAt:   post.UpdatedAt,
 		})
 	}
-	return &response
+	return response
 }

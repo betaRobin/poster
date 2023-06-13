@@ -44,7 +44,7 @@ func GetPostsByUser(c *gin.Context) {
 	posts, err := post.GetPostsByUser(userId)
 
 	if err == nil {
-		c.JSON(http.StatusOK, response.Posts(*posts))
+		c.JSON(http.StatusOK, response.Posts(posts))
 	} else {
 		helper.ErrorResponse(c, http.StatusInternalServerError, errlist.ErrInternalServerError)
 	}

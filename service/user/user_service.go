@@ -18,7 +18,7 @@ func Login(request request.Login) (*uuid.UUID, error) {
 
 	if result.Error == nil {
 		log.Println("[Login] Login success")
-		return &user.Id, nil
+		return &user.ID, nil
 	} else if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, errlist.ErrInvalidLogin
 	} else {

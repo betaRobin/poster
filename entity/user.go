@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	Id        uuid.UUID  `json:"id" gorm:"type:uuid;default:uuid_generate_v4()"`
+	ID        uuid.UUID  `json:"id" gorm:"type:uuid;default:uuid_generate_v4()"`
 	Username  string     `json:"username"`
 	Password  string     `json:"password"`
 	CreatedAt time.Time  `json:"created_at" gorm:"default:current_timestamp()"`
@@ -18,7 +18,7 @@ type User struct {
 func NewUser(username string, password string) *User {
 	userId, _ := uuid.NewRandom()
 	newUser := User{
-		Id:        userId,
+		ID:        userId,
 		Username:  username,
 		Password:  password,
 		CreatedAt: time.Now(),

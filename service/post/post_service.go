@@ -43,3 +43,7 @@ func GetPostsByUser(userId string) (*[]entity.Post, error) {
 		return posts, nil
 	}
 }
+
+func EditPost(title string, description string) error {
+	return nil
+}
