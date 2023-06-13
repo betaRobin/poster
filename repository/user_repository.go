@@ -22,7 +22,7 @@ func VerifyUser(username string, password string) (*entity.User, *gorm.DB) {
 }
 
 func InsertUser(username string, password string) (*entity.User, *gorm.DB) {
-	user := entity.User{Username: username, Password: password}
+	user := entity.NewUser(username, password)
 	db := database.Connect()
 	result := db.Create(&user)
 
@@ -30,7 +30,7 @@ func InsertUser(username string, password string) (*entity.User, *gorm.DB) {
 		log.Println("[InsertUser] Failed to insert User")
 	}
 
-	return &user, result
+	return user, result
 }
 
 func FindUserByUsername(username string) (*entity.User, *gorm.DB) {
