@@ -45,13 +45,13 @@ func FindUserByUsername(username string) (*entity.User, *gorm.DB) {
 	return &user, result
 }
 
-func FindUserById(id string) (*entity.User, *gorm.DB) {
+func FindUserById(userUUID uuid.UUID) (*entity.User, *gorm.DB) {
 	var user entity.User
 	db := database.Connect()
-	result := db.Where(&entity.User{ID: uuid.MustParse(id)}).First(&user)
+	result := db.Where(&entity.User{ID: userUUID}).First(&user)
 
 	if result.Error != nil {
-		log.Printf("[FindUserById] Failed to query User with id %s\n", id)
+		log.Printf("[FindUserById] Failed to query User with id %s\n", userUUID.String())
 	}
 
 	return &user, result

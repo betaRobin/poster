@@ -27,7 +27,7 @@ func Login(request request.Login) (*uuid.UUID, error) {
 }
 
 func Register(request request.Register) error {
-	if !helper.ValidateUsername(request.Username) {
+	if !helper.IsValidUsername(request.Username) {
 		log.Println("[Register] Invalid username")
 		return errlist.ErrInvalidUserName
 	}

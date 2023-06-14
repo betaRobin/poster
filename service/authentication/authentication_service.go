@@ -4,12 +4,10 @@ import (
 	"log"
 
 	"github.com/betarobin/poster/repository"
-	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-func IsUserLoggedIn(c *gin.Context) bool {
-	userId := c.GetHeader("user-id")
-
+func IsUserLoggedIn(userId string) bool {
 	if len(userId) != 0 {
 		log.Println("[Login] User already logged on")
 		return true
@@ -18,11 +16,15 @@ func IsUserLoggedIn(c *gin.Context) bool {
 	}
 }
 
-func IsValidUser(c *gin.Context) bool {
-	userId := c.GetHeader("user-id")
-
+func IsValidUser(userId string) bool {
 	if len(userId) != 0 {
-		_, result := repository.FindUserById(userId)
+		userUUID, err := uuid.Parse(userId)
+
+		if err != nil {
+			return false
+		}
+
+		_, result := repository.FindUserById(userUUID)
 		return result.Error == nil
 	} else {
 		return false

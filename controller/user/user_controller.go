@@ -13,7 +13,9 @@ import (
 )
 
 func Login(c *gin.Context) {
-	if auth.IsUserLoggedIn(c) {
+	userId := c.GetHeader("user-id")
+
+	if auth.IsUserLoggedIn(userId) {
 		helper.Response(c, http.StatusBadRequest, helper.BaseResponse("user currently logged on"))
 		return
 	}
@@ -21,11 +23,11 @@ func Login(c *gin.Context) {
 	var request request.Login
 	c.BindJSON(&request)
 
-	userId, err := user.Login(request)
+	userUUID, err := user.Login(request)
 
 	if err == nil {
 		helper.Response(c, http.StatusOK, gin.H{
-			"user_id": userId.String(),
+			"user_id": userUUID.String(),
 		})
 	} else if errors.Is(err, errlist.ErrInvalidLogin) {
 		helper.ErrorResponse(c, http.StatusBadRequest, err)

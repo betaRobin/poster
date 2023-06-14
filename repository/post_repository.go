@@ -32,3 +32,26 @@ func GetPostsByUserId(userId uuid.UUID) (*[]entity.Post, *gorm.DB) {
 
 	return &posts, result
 }
+
+func GetPostById(postId uuid.UUID) (*entity.Post, *gorm.DB) {
+	var post entity.Post
+	db := database.Connect()
+	result := db.Model(&entity.Post{}).Preload("User").Where("id = ?", postId).Find(&post)
+
+	if result.Error != nil {
+		log.Println("[GetPostsByUserId] Failed to get posts")
+	}
+
+	return &post, result
+}
+
+func EditPostContent(post entity.Post) *gorm.DB {
+	db := database.Connect()
+	result := db.Save(&post)
+
+	if result.Error != nil {
+		log.Println("[EditPostContent] Failed to edit post")
+	}
+
+	return result
+}
