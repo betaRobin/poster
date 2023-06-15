@@ -84,3 +84,29 @@ func EditPost(c *gin.Context) {
 		}
 	}
 }
+
+func DeletePost(c *gin.Context) {
+	userId := c.GetHeader("user-id")
+
+	var request request.DeletePostRequest
+	c.BindJSON(&request)
+
+	err := post.DeletePost(userId, request)
+
+	if err == nil {
+		c.JSON(http.StatusOK, helper.BaseResponse("delete post success"))
+	} else {
+		switch err {
+		case errlist.ErrInvalidPostID:
+			helper.ErrorResponse(c, http.StatusBadRequest, err)
+		case errlist.ErrPostNotFound:
+			helper.ErrorResponse(c, http.StatusNotFound, err)
+		case errlist.ErrInvalidCredentials:
+			fallthrough
+		case errlist.ErrForbidden:
+			helper.ErrorResponse(c, http.StatusForbidden, err)
+		default:
+			helper.ErrorResponse(c, http.StatusInternalServerError, err)
+		}
+	}
+}

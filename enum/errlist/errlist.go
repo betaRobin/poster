@@ -20,4 +20,5 @@ var (
 	ErrInvalidDescriptionLength = errors.New("invalid description length")
 	ErrInvalidPostID            = errors.New("post id is invalid")
 	ErrNoFieldToUpdate          = errors.New("no field to update")
+	ErrPostNotFound             = errors.New("post not found")
 )

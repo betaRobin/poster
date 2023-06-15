@@ -55,3 +55,14 @@ func EditPostContent(post entity.Post) *gorm.DB {
 
 	return result
 }
+
+func DeletePostById(postId uuid.UUID) *gorm.DB {
+	db := database.Connect()
+	result := db.Delete(&entity.Post{}, postId)
+
+	if result.Error != nil {
+		log.Println("[DeletePostById] Failed to delete post")
+	}
+
+	return result
+}

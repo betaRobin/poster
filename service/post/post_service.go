@@ -34,11 +34,7 @@ func CreatePost(userId string, request request.CreatePostRequest) error {
 
 	_, result := repository.InsertPost(userUUID, title, description)
 
-	if result.Error != nil {
-		return result.Error
-	} else {
-		return nil
-	}
+	return result.Error
 }
 
 func GetPostsByUser(userId string) (*[]entity.Post, error) {
@@ -55,8 +51,6 @@ func GetPostsByUser(userId string) (*[]entity.Post, error) {
 func EditPost(userId string, req request.EditPostRequest) error {
 	if !auth.IsValidUser(userId) {
 		return errlist.ErrInvalidCredentials
-	} else if req.PostID == "" {
-		return errlist.ErrInvalidPostID
 	} else if req.Title == nil &&
 		req.Description == nil {
 		return errlist.ErrNoFieldToUpdate
@@ -72,7 +66,7 @@ func EditPost(userId string, req request.EditPostRequest) error {
 
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return errlist.ErrInvalidPostID
+			return errlist.ErrPostNotFound
 		} else {
 			return errlist.ErrInternalServerError
 		}
@@ -96,7 +90,37 @@ func EditPost(userId string, req request.EditPostRequest) error {
 		}
 	}
 
-	repository.EditPostContent(*selectedPost)
+	// post.UpdatedAt gets automatically updated by Gin
+	result = repository.EditPostContent(*selectedPost)
 
-	return nil
+	return result.Error
+}
+
+func DeletePost(userId string, req request.DeletePostRequest) error {
+	if !auth.IsValidUser(userId) {
+		return errlist.ErrInvalidCredentials
+	}
+
+	postUUID, err := uuid.Parse(req.PostID)
+
+	if err != nil {
+		return errlist.ErrInvalidPostID
+	}
+
+	selectedPost, result := repository.GetPostById(postUUID)
+
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return errlist.ErrPostNotFound
+		} else {
+			return errlist.ErrInternalServerError
+		}
+	} else if selectedPost.UserID.String() != userId {
+		return errlist.ErrForbidden
+	}
+
+	// post.DeletedAt gets automatically updated by Gin
+	result = repository.DeletePostById(postUUID)
+
+	return result.Error
 }
