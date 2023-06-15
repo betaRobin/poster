@@ -44,9 +44,16 @@ func Register(c *gin.Context) {
 
 	if err == nil {
 		helper.Response(c, http.StatusOK, helper.BaseResponse("user registration success"))
-	} else if errors.Is(err, errlist.ErrInvalidUserName) || errors.Is(err, errlist.ErrUsernameTaken) {
-		helper.ErrorResponse(c, http.StatusBadRequest, err)
 	} else {
-		helper.ErrorResponse(c, http.StatusInternalServerError, errlist.ErrInternalServerError)
+		switch err {
+		case errlist.ErrInvalidUsername:
+			fallthrough
+		case errlist.ErrInvalidPassword:
+			fallthrough
+		case errlist.ErrUsernameTaken:
+			helper.ErrorResponse(c, http.StatusBadRequest, err)
+		default:
+			helper.ErrorResponse(c, http.StatusInternalServerError, errlist.ErrInternalServerError)
+		}
 	}
 }

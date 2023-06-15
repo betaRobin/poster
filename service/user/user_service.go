@@ -26,16 +26,17 @@ func Login(request request.Login) (*uuid.UUID, error) {
 	}
 }
 
-func Register(request request.Register) error {
-	if !helper.IsValidUsername(request.Username) {
-		log.Println("[Register] Invalid username")
-		return errlist.ErrInvalidUserName
+func Register(req request.Register) error {
+	if !helper.IsValidUsername(req.Username) {
+		return errlist.ErrInvalidUsername
+	} else if !helper.IsValidPassword(req.Password) {
+		return errlist.ErrInvalidPassword
 	}
 
-	_, result := repository.FindUserByUsername(request.Username)
+	_, result := repository.FindUserByUsername(req.Username)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		_, result := repository.InsertUser(request.Username, request.Password)
+		_, result := repository.InsertUser(req.Username, req.Password)
 
 		if result.Error == nil {
 			log.Println("[Register] User registration success")

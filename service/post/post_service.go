@@ -90,7 +90,7 @@ func EditPost(userId string, req request.EditPostRequest) error {
 		}
 	}
 
-	// post.UpdatedAt gets automatically updated by Gin
+	// post.UpdatedAt gets automatically updated by Gorm
 	result = repository.EditPostContent(*selectedPost)
 
 	return result.Error
@@ -119,7 +119,7 @@ func DeletePost(userId string, req request.DeletePostRequest) error {
 		return errlist.ErrForbidden
 	}
 
-	// post.DeletedAt gets automatically updated by Gin
+	// post.DeletedAt gets automatically updated by Gorm
 	result = repository.DeletePostById(postUUID)
 
 	return result.Error

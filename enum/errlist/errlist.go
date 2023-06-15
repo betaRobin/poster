@@ -11,7 +11,8 @@ var (
 	ErrInvalidCredentials = errors.New("forbidden")
 
 	// User
-	ErrInvalidUserName = errors.New("invalid username format")
+	ErrInvalidUsername = errors.New("invalid username format")
+	ErrInvalidPassword = errors.New("invalid password format")
 	ErrUsernameTaken   = errors.New("username taken")
 	ErrInvalidLogin    = errors.New("invalid username or password")
 
