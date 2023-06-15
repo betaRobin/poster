@@ -21,7 +21,7 @@ func IsValidUsername(username string) bool {
 
 func IsValidPassword(password string) bool {
 	isInvalid, err := regexp.MatchString(INVALID_PASSWORD_REGEX, password)
-	if err != nil {
+	if err == nil {
 		return !isInvalid
 	} else {
 		return false
