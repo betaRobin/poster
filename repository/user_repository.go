@@ -17,7 +17,7 @@ func VerifyUser(username string, password string) (*entity.User, *gorm.DB) {
 	if result.Error != nil {
 		log.Println("[VerifyUser] Failed to verify User")
 	}
-	log.Println(user)
+
 	return &user, result
 }
 

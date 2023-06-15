@@ -13,6 +13,9 @@ import (
 )
 
 func Login(request request.Login) (*uuid.UUID, error) {
+	if !helper.IsValidUsername(request.Username) || !helper.IsValidPassword(request.Password) {
+		return nil, errlist.ErrInvalidLogin
+	}
 
 	user, result := repository.VerifyUser(request.Username, request.Password)
 
