@@ -7,10 +7,10 @@
 ## How to setup DB:
 1. Install Posgres
 2. Create a new `poster` database in Posgres
->`CREATE DATABASE poster;`
+```CREATE DATABASE poster;```
 
 ## How to run DB migrations
-Requires a `.env` file in the same `/poster` directory with the following properties:
+Requires a `.env` file in the same project directory with the following properties:
 - `DB_HOST`
 - `DB_USER`
 - `DB_PASSWORD`
@@ -20,53 +20,72 @@ Requires a `.env` file in the same `/poster` directory with the following proper
 - `DB_TIMEZONE`
 
 ### Windows
-1. Open the terminal (cmd)
+1. `cd` into the project directory
 2. Run `init.cmd` for every new terminal
 
 **Create Migration Files**
 
-To create migration files with `MIGRATION_NAME`, run:
->`.\createmig.cmd MIGRATION_NAME`
+To create migration files with `MIGRATION_NAME`:
+
+```$ .\cmig.cmd MIGRATION_NAME```
 
 **Migrate Up**
 
-- To migrate up to the latest version, run:
->`.\mig.cmd up`
+- To migrate up to the latest version:
+```$ .\mig.cmd up```
 
-- To migrate up by `X` steps from the current version, run:
->`.\mig.cmd up X`
+- To migrate up by `X` steps from the current version:
+```$ .\mig.cmd up X```
 
 **Migrate Down**
 
-- To migrate down to undo all migrations, run:
->`.\mig.cmd down`
+- To migrate down to undo all migrations:
+```$ .\mig.cmd down```
 
-- To migrate down by `X` steps from the current version, run:
->`.\mig.cmd down X`
+- To migrate down by `X` steps from the current version:
+```$ .\mig.cmd down X```
 
 **Force Migrate Step**
 
-To force a migration to step `X`, run:
->`.\mig.cmd force X`
+To force a migration to step `X`:
+```$ .\mig.cmd force X```
 
 ### mac/Linux
-1. Create an export using environment values (run once for new terminal)
+1. `cd` into the project directory
 
-`export POSTER_PSQL_URL='postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSLMODE}'`
+**Create Migration Files**
 
-2. Run migration (choose either up or down)
+To create migration files with `MIGRATION_NAME`:
 
-`migrate -database ${POSTER_PSQL_URL} -path database/migration {up|down}`
+```$ ./cmig.sh MIGRATION_NAME```
 
-More info: https://github.com/golang-migrate/migrate/blob/master/database/postgres/TUTORIAL.md
+**Migrate Up**
 
-## How to create DB migration files
-1. Create the up and down migration files
+- To migrate up to the latest version:
+```$ ./mig.sh up```
 
-`migrate create -ext sql -dir database/migration -seq MIGRATION_NAME_HERE`
+- To migrate up by `X` steps from the current version:
+```$ ./mig.sh up X```
 
-2. Add the PSQL statements in the new `.up` files in `database/migration`
-3. Add the inverse of the PSQL statements in the `.down` files in `database/migration`
+**Migrate Down**
+
+- To migrate down to undo all migrations:
+```$ ./mig.sh down```
+
+- To migrate down by `X` steps from the current version:
+```$ ./mig.sh down X```
+
+**Force Migrate Step**
+
+To force a migration to step `X`:
+```$ ./mig.sh force X```
+
+For more info on migration, visit the [golang-migrate](https://github.com/golang-migrate/migrate/blob/master/database/postgres/TUTORIAL.md) page
+
+## Note on DB migration files
+
+1. Add the PSQL statements in the new `.up` files in `database/migration`
+2. Add the inverse of the PSQL statements in the `.down` files in `database/migration`
 
 ## How to run:
-`go run .`
+```go run .```
