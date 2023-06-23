@@ -15,7 +15,7 @@ func ParseContent(postType string, postContent string) (interface{}, error) {
 	case typepost.Text:
 		return content.ParseText(postContent)
 	case typepost.Checkbox:
-		return content.ParseCheckboxes(postContent)
+		return content.ParseChecklist(postContent)
 	case typepost.Image:
 		return content.ParseImage(postContent)
 	default:

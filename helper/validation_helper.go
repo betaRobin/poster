@@ -6,6 +6,7 @@ import (
 
 	typepost "github.com/betarobin/poster/enum/type_post"
 	contenthelper "github.com/betarobin/poster/helper/content"
+	"github.com/betarobin/poster/model/content"
 )
 
 // must be a combination of lowercase English alphabet or numeric, 2-20 characters
@@ -31,17 +32,17 @@ func IsValidPassword(password string) bool {
 	}
 }
 
-func ValidateLength(minlen int, maxlen int, text string) bool {
+func validateLength(minlen int, maxlen int, text string) bool {
 	trimmed := strings.TrimSpace(text)
 	return len(trimmed) > minlen && len(trimmed) < maxlen+1
 }
 
 func IsValidTitle(title string) bool {
-	return ValidateLength(0, 70, title)
+	return validateLength(0, 70, title)
 }
 
 func IsValidText(content string) bool {
-	return ValidateLength(0, 300, content)
+	return validateLength(0, 300, content)
 }
 
 func IsValidPostType(postType string) bool {
@@ -57,6 +58,40 @@ func IsValidContent(postType string, postContent string) bool {
 		return false
 	}
 
-	_, err := contenthelper.ParseContent(postType, postContent)
-	return err != nil
+	parsedContent, err := contenthelper.ParseContent(postType, postContent)
+
+	if err != nil {
+		return false
+	}
+
+	switch postType {
+	case typepost.Text:
+		text := parsedContent.(content.Text)
+		return IsValidContentText(text)
+	case typepost.Checkbox:
+		checkbox := parsedContent.(content.Checklist)
+		return IsValidContentChecklist(checkbox)
+	case typepost.Image:
+		image := parsedContent.(content.Image)
+		return IsValidContentImage(image)
+	default:
+		return false
+	}
+}
+
+func IsValidContentText(text content.Text) bool {
+	return IsValidText(text.Text)
+}
+
+func IsValidContentImage(image content.Image) bool {
+	return IsValidText(image.Text)
+}
+
+func IsValidContentChecklist(checklist content.Checklist) bool {
+	for _, data := range checklist.Checklist {
+		if !IsValidText(data.Text) {
+			return false
+		}
+	}
+	return true
 }

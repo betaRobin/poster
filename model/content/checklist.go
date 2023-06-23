@@ -6,8 +6,8 @@ import (
 	"github.com/betarobin/poster/enum/errlist"
 )
 
-type Checkboxes struct {
-	Checkboxes []*Checkbox `json:"checkboxes"`
+type Checklist struct {
+	Checklist []*Checkbox `json:"checklist"`
 }
 
 type Checkbox struct {
@@ -16,8 +16,8 @@ type Checkbox struct {
 	Text      string `json:"text"`
 }
 
-func ParseCheckboxes(jsonString string) (*Checkboxes, error) {
-	checkboxes := &Checkboxes{}
+func ParseChecklist(jsonString string) (*Checklist, error) {
+	checkboxes := &Checklist{}
 
 	err := json.Unmarshal([]byte(jsonString), checkboxes)
 	if err != nil {
