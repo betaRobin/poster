@@ -17,9 +17,10 @@ var (
 	ErrInvalidLogin    = errors.New("invalid username or password")
 
 	// Post
-	ErrInvalidTitleLength       = errors.New("invalid title length")
-	ErrInvalidDescriptionLength = errors.New("invalid description length")
-	ErrInvalidPostID            = errors.New("post id is invalid")
-	ErrNoFieldToUpdate          = errors.New("no field to update")
-	ErrPostNotFound             = errors.New("post not found")
+	ErrInvalidPostType    = errors.New("invalid post type")
+	ErrInvalidTitleLength = errors.New("invalid title length")
+	ErrInvalidContent     = errors.New("invalid content")
+	ErrInvalidPostID      = errors.New("post id is invalid")
+	ErrNoFieldToUpdate    = errors.New("no field to update")
+	ErrPostNotFound       = errors.New("post not found")
 )

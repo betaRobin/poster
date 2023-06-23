@@ -3,6 +3,9 @@ package helper
 import (
 	"regexp"
 	"strings"
+
+	typepost "github.com/betarobin/poster/enum/type_post"
+	contenthelper "github.com/betarobin/poster/helper/content"
 )
 
 // must be a combination of lowercase English alphabet or numeric, 2-20 characters
@@ -37,6 +40,23 @@ func IsValidTitle(title string) bool {
 	return ValidateLength(0, 70, title)
 }
 
-func IsValidDescription(description string) bool {
-	return ValidateLength(0, 300, description)
+func IsValidText(content string) bool {
+	return ValidateLength(0, 300, content)
+}
+
+func IsValidPostType(postType string) bool {
+	if len(postType) == 0 {
+		return false
+	}
+
+	return Contains(typepost.GetAllTypes(), strings.ToLower(postType))
+}
+
+func IsValidContent(postType string, postContent string) bool {
+	if len(postContent) == 0 {
+		return false
+	}
+
+	_, err := contenthelper.ParseContent(postType, postContent)
+	return err != nil
 }

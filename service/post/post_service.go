@@ -19,26 +19,35 @@ func CreatePost(userId string, request request.CreatePostRequest) error {
 		return errlist.ErrInvalidTitleLength
 	}
 
-	if !helper.IsValidDescription(request.Description) {
-		return errlist.ErrInvalidDescriptionLength
+	if !helper.IsValidPostType(request.Type) {
+		return errlist.ErrInvalidPostType
+	}
+
+	postType := strings.ToLower(request.Type)
+	if !helper.IsValidContent(postType, request.Content) {
+		return errlist.ErrInvalidContent
 	}
 
 	userUUID, err := uuid.Parse(userId)
-
 	if err != nil {
 		return errlist.ErrInternalServerError
 	}
 
 	title := strings.TrimSpace(request.Title)
-	description := strings.TrimSpace(request.Description)
+	content := strings.TrimSpace(request.Content)
 
-	_, result := repository.InsertPost(userUUID, title, description)
+	_, result := repository.InsertPost(userUUID, postType, title, content)
 
 	return result.Error
 }
 
 func GetPostsByUser(userId string) (*[]entity.Post, error) {
-	userUUID := uuid.MustParse(userId)
+	userUUID, err := uuid.Parse(userId)
+
+	if err != nil {
+		return nil, errlist.ErrInternalServerError
+	}
+
 	posts, result := repository.GetPostsByUserId(userUUID)
 
 	if result.Error != nil {
@@ -52,7 +61,7 @@ func EditPost(userId string, req request.EditPostRequest) error {
 	if !auth.IsValidUser(userId) {
 		return errlist.ErrInvalidCredentials
 	} else if req.Title == nil &&
-		req.Description == nil {
+		req.Content == nil {
 		return errlist.ErrNoFieldToUpdate
 	}
 
@@ -82,11 +91,11 @@ func EditPost(userId string, req request.EditPostRequest) error {
 		}
 	}
 
-	if req.Description != nil {
-		if !helper.IsValidDescription(*req.Description) {
-			return errlist.ErrInvalidDescriptionLength
+	if req.Content != nil {
+		if !helper.IsValidContent(selectedPost.Type, *req.Content) {
+			return errlist.ErrInvalidContent
 		} else {
-			selectedPost.Description = strings.TrimSpace(*req.Description)
+			selectedPost.Content = strings.TrimSpace(*req.Content)
 		}
 	}
 
