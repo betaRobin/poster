@@ -6,15 +6,11 @@ import (
 	"github.com/betarobin/poster/model/content"
 )
 
-func ParseContent(postType string, postContent string) (interface{}, error) {
-	if len(postContent) == 0 {
-		return nil, errlist.ErrInvalidContent
-	}
-
+func ParseContent(postType string, postContent interface{}) (interface{}, error) {
 	switch postType {
 	case typepost.Text:
 		return content.ParseText(postContent)
-	case typepost.Checkbox:
+	case typepost.Checklist:
 		return content.ParseChecklist(postContent)
 	case typepost.Image:
 		return content.ParseImage(postContent)

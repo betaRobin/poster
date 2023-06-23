@@ -1,11 +1,11 @@
 package typepost
 
 var (
-	Text     = "text"
-	Checkbox = "checkbox"
-	Image    = "image"
+	Text      = "text"
+	Checklist = "checklist"
+	Image     = "image"
 )
 
 func GetAllTypes() []string {
-	return []string{Text, Checkbox, Image}
+	return []string{Text, Checklist, Image}
 }

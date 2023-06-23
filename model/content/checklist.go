@@ -1,8 +1,6 @@
 package content
 
 import (
-	"encoding/json"
-
 	"github.com/betarobin/poster/enum/errlist"
 )
 
@@ -16,38 +14,45 @@ type Checkbox struct {
 	Text      string `json:"text"`
 }
 
-func ParseChecklist(jsonString string) (*Checklist, error) {
-	checkboxes := &Checklist{}
+func ParseChecklist(jsonInterface interface{}) (*Checklist, error) {
+	m, ok := jsonInterface.([]interface{})
 
-	err := json.Unmarshal([]byte(jsonString), checkboxes)
-	if err != nil {
+	if !ok {
 		return nil, errlist.ErrInvalidContent
 	}
 
-	return checkboxes, nil
-}
+	checklist := []*Checkbox{}
 
-/*
-Marshalling/Unmarshalling example
+	for _, data := range m {
+		parsedData, ok := data.(map[string]interface{})
 
-func main() {
-	cbox1 := &Checkbox{SortOrder: 1, IsChecked: false, Text: "false"}
-	cbox2 := &Checkbox{SortOrder: 2, IsChecked: true, Text: "true"}
-
-	cboxslice := []*Checkbox{cbox1, cbox2}
-	cboxes := &Checkboxes{Data: cboxslice}
-	cboxjson, _ := json.Marshal(cboxes)
-
-	fmt.Println("Marshalled: " + string(cboxjson))
-
-	parsedCbox, err := ParseCheckboxes(string(cboxjson))
-
-	if err != nil {
-		fmt.Println("Failed to parse jsong string")
-	} else {
-		for _, item := range parsedCbox.Data {
-			fmt.Printf("SortOrder : %d\nIsChecked : %t\nText : %s\n\n", item.SortOrder, item.IsChecked, item.Text)
+		if !ok {
+			continue
 		}
+
+		checkbox := &Checkbox{}
+
+		// comes in as float64 in the byte[] interface
+		if parsedSortOrder, ok := parsedData["sort_order"].(float64); ok {
+			checkbox.SortOrder = uint8(parsedSortOrder)
+		} else {
+			return nil, errlist.ErrInvalidContent
+		}
+
+		if parsedIsChecked, ok := parsedData["is_checked"].(bool); ok {
+			checkbox.IsChecked = parsedIsChecked
+		} else {
+			return nil, errlist.ErrInvalidContent
+		}
+
+		if parsedText, ok := parsedData["text"].(string); ok {
+			checkbox.Text = parsedText
+		} else {
+			return nil, errlist.ErrInvalidContent
+		}
+
+		checklist = append(checklist, checkbox)
 	}
+
+	return &Checklist{Checklist: checklist}, nil
 }
-*/

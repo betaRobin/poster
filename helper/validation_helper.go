@@ -53,11 +53,7 @@ func IsValidPostType(postType string) bool {
 	return Contains(typepost.GetAllTypes(), strings.ToLower(postType))
 }
 
-func IsValidContent(postType string, postContent string) bool {
-	if len(postContent) == 0 {
-		return false
-	}
-
+func IsValidContent(postType string, postContent interface{}) bool {
 	parsedContent, err := contenthelper.ParseContent(postType, postContent)
 
 	if err != nil {
@@ -66,28 +62,28 @@ func IsValidContent(postType string, postContent string) bool {
 
 	switch postType {
 	case typepost.Text:
-		text := parsedContent.(content.Text)
+		text := parsedContent.(*content.Text)
 		return IsValidContentText(text)
-	case typepost.Checkbox:
-		checkbox := parsedContent.(content.Checklist)
+	case typepost.Checklist:
+		checkbox := parsedContent.(*content.Checklist)
 		return IsValidContentChecklist(checkbox)
 	case typepost.Image:
-		image := parsedContent.(content.Image)
+		image := parsedContent.(*content.Image)
 		return IsValidContentImage(image)
 	default:
 		return false
 	}
 }
 
-func IsValidContentText(text content.Text) bool {
+func IsValidContentText(text *content.Text) bool {
 	return IsValidText(text.Text)
 }
 
-func IsValidContentImage(image content.Image) bool {
+func IsValidContentImage(image *content.Image) bool {
 	return IsValidText(image.Text)
 }
 
-func IsValidContentChecklist(checklist content.Checklist) bool {
+func IsValidContentChecklist(checklist *content.Checklist) bool {
 	for _, data := range checklist.Checklist {
 		if !IsValidText(data.Text) {
 			return false

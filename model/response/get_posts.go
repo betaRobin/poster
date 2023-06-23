@@ -1,10 +1,13 @@
 package response
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/betarobin/poster/entity"
-	contenthelper "github.com/betarobin/poster/helper/content"
+	typepost "github.com/betarobin/poster/enum/type_post"
+	"github.com/betarobin/poster/model/content"
 )
 
 type GetPostsResponse struct {
@@ -26,20 +29,46 @@ func Posts(posts *[]entity.Post) map[string][]*GetPostsResponse {
 	for _, post := range *posts {
 		postResponse := &GetPostsResponse{
 			PostId:    post.ID.String(),
+			Type:      post.Type,
 			Title:     post.Title,
-			Content:   post.Content,
 			CreatedAt: post.CreatedAt,
 			UpdatedAt: post.UpdatedAt,
 		}
 
-		content, err := contenthelper.ParseContent(post.Type, post.Content)
+		contentJsonString := post.Content
 
-		if err != nil {
+		switch post.Type {
+		case typepost.Text:
+			text := &content.Text{}
+			err := json.Unmarshal([]byte(contentJsonString), text)
+			if err == nil {
+				postResponse.Content = text
+			} else {
+				continue
+			}
+		case typepost.Image:
+			image := &content.Image{}
+			err := json.Unmarshal([]byte(contentJsonString), image)
+			if err == nil {
+				postResponse.Content = image
+			} else {
+				continue
+			}
+		case typepost.Checklist:
+			checklist := &content.Checklist{}
+			err := json.Unmarshal([]byte(contentJsonString), checklist)
+			if err == nil {
+				postResponse.Content = checklist
+			} else {
+				continue
+			}
+		default:
 			continue
-		} else {
-			postResponse.Content = content
-			response = append(response, postResponse)
 		}
+
+		fmt.Println(contentJsonString)
+
+		response = append(response, postResponse)
 	}
 	return map[string][]*GetPostsResponse{"posts": response}
 }

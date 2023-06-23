@@ -3,4 +3,7 @@ BEGIN;
 ALTER TABLE posts
 RENAME description TO content;
 
+ALTER TABLE posts
+ADD COLUMN type TEXT DEFAULT 'text' NOT NULL;
+
 COMMIT;

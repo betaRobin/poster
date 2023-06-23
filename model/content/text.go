@@ -1,8 +1,6 @@
 package content
 
 import (
-	"encoding/json"
-
 	"github.com/betarobin/poster/enum/errlist"
 )
 
@@ -10,13 +8,18 @@ type Text struct {
 	Text string `json:"text"`
 }
 
-func ParseText(jsonString string) (*Text, error) {
-	text := &Text{}
-
-	err := json.Unmarshal([]byte(jsonString), text)
-	if err != nil {
+func ParseText(jsonInterface interface{}) (*Text, error) {
+	m, ok := jsonInterface.(map[string]interface{})
+	if !ok {
 		return nil, errlist.ErrInvalidContent
 	}
 
-	return text, nil
+	text := &Text{}
+
+	if parsedText, ok := m["text"].(string); ok {
+		text.Text = parsedText
+		return text, nil
+	}
+
+	return nil, errlist.ErrInvalidContent
 }
