@@ -16,11 +16,11 @@ type GetPostsResponse struct {
 	UpdatedAt *time.Time  `json:"updated_at"`
 }
 
-func Posts(posts *[]entity.Post) []*GetPostsResponse {
+func Posts(posts *[]entity.Post) map[string][]*GetPostsResponse {
 	var response = []*GetPostsResponse{}
 
 	if posts == nil {
-		return response
+		return map[string][]*GetPostsResponse{"posts": response}
 	}
 
 	for _, post := range *posts {
@@ -38,9 +38,8 @@ func Posts(posts *[]entity.Post) []*GetPostsResponse {
 			continue
 		} else {
 			postResponse.Content = content
+			response = append(response, postResponse)
 		}
-
-		response = append(response, postResponse)
 	}
-	return response
+	return map[string][]*GetPostsResponse{"posts": response}
 }
