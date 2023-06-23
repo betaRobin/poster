@@ -28,7 +28,7 @@ func CreatePost(c *gin.Context) {
 
 	if err == nil {
 		helper.Response(c, http.StatusOK, helper.BaseResponse("post creation success"))
-	} else if errors.Is(err, errlist.ErrInvalidTitleLength) || errors.Is(err, errlist.ErrInvalidDescriptionLength) {
+	} else if errors.Is(err, errlist.ErrInvalidTitleLength) || errors.Is(err, errlist.ErrInvalidContent) {
 		helper.ErrorResponse(c, http.StatusBadRequest, err)
 	} else {
 		helper.ErrorResponse(c, http.StatusInternalServerError, errlist.ErrInternalServerError)
@@ -73,7 +73,7 @@ func EditPost(c *gin.Context) {
 			fallthrough
 		case errlist.ErrInvalidTitleLength:
 			fallthrough
-		case errlist.ErrInvalidDescriptionLength:
+		case errlist.ErrInvalidContent:
 			fallthrough
 		case errlist.ErrNoFieldToUpdate:
 			helper.ErrorResponse(c, http.StatusBadRequest, err)

@@ -1,7 +1,8 @@
 package request
 
 type EditPostRequest struct {
-	PostID      string  `json:"post_id"`
-	Title       *string `json:"title,omitempty"`
-	Description *string `json:"description,omitempty"`
+	Type    string  `json:"type"`
+	PostID  string  `json:"post_id"`
+	Title   *string `json:"title,omitempty"`
+	Content *string `json:"content,omitempty"`
 }

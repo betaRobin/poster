@@ -9,8 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func InsertPost(userId uuid.UUID, title string, description string) (*entity.Post, *gorm.DB) {
-	post := entity.NewPost(title, description, userId)
+func InsertPost(userId uuid.UUID, postType string, title string, content string) (*entity.Post, *gorm.DB) {
+	post := entity.NewPost(userId, postType, title, content)
 	db := database.Connect()
 	result := db.Create(post)
 
