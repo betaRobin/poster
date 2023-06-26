@@ -50,7 +50,7 @@ func IsValidPostType(postType string) bool {
 		return false
 	}
 
-	return Contains(typepost.GetAllTypes(), strings.ToLower(postType))
+	return Contains(typepost.GetAllTypes(), postType)
 }
 
 func IsValidContent(postType string, postContent interface{}) bool {

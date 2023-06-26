@@ -63,6 +63,7 @@ func Posts(posts *[]entity.Post) map[string][]*GetPostsResponse {
 				continue
 			}
 		default:
+			// do not send post if unknown type
 			continue
 		}
 
