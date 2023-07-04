@@ -13,10 +13,10 @@ import (
 )
 
 const (
-	// timestamp [REQUEST] request-id:abc123 [GET /all] request-header:%s request-body:%s
+	// [REQUEST] [GET /all] request-id:abc123 request-header:%s request-body:%s
 	requestFormat = "[REQUEST] [%s %s] request-id:%s request-header:%s request-body:%s\n"
 
-	// timestamp [RESPONSE] request-id:abc123 [GET /all 200] response:%s
+	// [RESPONSE] [GET /all 200] request-id:abc123 response-header:%s response-body:%s response-time:%sms
 	responseFormat = "[RESPONSE] [%s %s %d] request-id:%s response-header:%s response-body:%s response-time:%dms\n"
 )
 
