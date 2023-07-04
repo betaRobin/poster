@@ -2,7 +2,6 @@ package response
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/betarobin/poster/entity"
@@ -67,9 +66,8 @@ func Posts(posts *[]entity.Post) map[string][]*GetPostsResponse {
 			continue
 		}
 
-		fmt.Println(contentJsonString)
-
 		response = append(response, postResponse)
 	}
+
 	return map[string][]*GetPostsResponse{"posts": response}
 }
